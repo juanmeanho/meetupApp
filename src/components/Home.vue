@@ -10,17 +10,16 @@
     </v-layout>
     <v-layout row wrap class="mt-2">
       <v-flex xs12>
-        <v-carousel
-          delimiter-icon="stop"
-          prev-icon="mdi-arrow-left"
-          next-icon="mdi-arrow-right">
-            <v-carousel-item
-              v-for="meetup in meetups"
-              :key="meetup.id"
-              :src="meetup.imageUrl"
-              @click="onLoadMeetup(meetup.id)">
-              <div class="title">{{ meetup.title }}</div>
-            </v-carousel-item>
+        <v-carousel style="cursor: pointer;">
+          <v-carousel-item
+            v-for="meetup in meetups"
+            :src="meetup.imageUrl"
+            :key="meetup.id"
+            @click="onLoadMeetup(meetup.id)">
+            <div class="title">
+              {{ meetup.title }}
+            </div>
+          </v-carousel-item>
         </v-carousel>
       </v-flex>
     </v-layout>
@@ -33,15 +32,16 @@
 </template>
 
 <script>
+
+
+
   export default {
-    data(){
-      return {
-        meetups: [
-          {imageUrl:'https://media-cdn.tripadvisor.com/media/photo-s/0e/9a/e3/1d/freedom-tower.jpg', id:'dfsdfsdf323', title: 'Meetup in New York'},
-          {imageUrl:'https://media-cdn.tripadvisor.com/media/photo-s/0d/f5/7c/f2/eiffel-tower-priority.jpg', id:'dfsdfsdf32354454', title: 'Meetup in Paris'}
-        ]
-      }
-    },
+    computed: {
+        meetups()
+        {
+          return this.$store.getters.featuredMeetups
+        }        
+      },
     methods:{
       onLoadMeetup(id){
           this.$router.push('/meetups' + id)
@@ -49,6 +49,8 @@
       }
   };
 </script>
+
+
 
 <style scoped>
   .title {

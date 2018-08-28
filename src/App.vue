@@ -18,7 +18,11 @@
    </v-navigation-drawer>
    <v-toolbar dark class="secondary">
      <v-toolbar-title>
-      DevMeetup
+       <router-link 
+        to="/" 
+        style="cursor: pointer; text-decoration: none; color: white;">
+          DevMeetup
+       </router-link>
     </v-toolbar-title>
      <v-toolbar-side-icon 
       @click.stop="sideNav = !sideNav"
