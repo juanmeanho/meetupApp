@@ -38,5 +38,5 @@ export default {
 			return this.$store.getters.loadedMeetups
 		}
 	}
-}
+};
 </script>

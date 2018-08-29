@@ -7,7 +7,7 @@
     </v-layout>
     <v-layout row>
       <v-flex xs12>
-        <form @submit.prevent="onCreateMeetup()">
+        <form @submit.prevent="onCreateMeetup">
           <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
               <v-text-field
@@ -62,6 +62,7 @@
             <v-flex xs12 sm6 offset-sm3>
               <v-btn class="secondary" 
                     :disabled="!formIsValid"
+                    type="submit"
                     >Create Meetup</v-btn>
             </v-flex>
           </v-layout>
@@ -105,6 +106,6 @@ export default {
       this.$router.push('/meetups')
     }
   }
-}
+};
 </script>
 

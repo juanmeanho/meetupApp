@@ -30,9 +30,8 @@ export default {
 	props: ['id'],
 	computed:{
 		meetup(){
-			return this.$state.getters.loadedMeetup(this.id)
+			return this.$store.getters.loadedMeetup(this.id)
 		}
 	}
-	
-}
+};
 </script>

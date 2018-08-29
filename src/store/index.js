@@ -30,8 +30,8 @@ export const store = new Vuex.Store({
     actions: {
         createMeetup({commit}, payload){
             const meetup = {
-                title:payload.title,
-                location:payload.location,
+                title: payload.title,
+                location: payload.location,
                 imageUrl: payload.imageUrl,
                 description: payload.description,
                 date: payload.date,
