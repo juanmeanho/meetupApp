@@ -12,8 +12,8 @@
 						contain>
 					</v-card-media>
 					<v-card-text>
-						<div class="info--text">{{ meetup.date}}</div>
-						<div>My Awesome Meetup</div>
+						<div class="info--text">{{ meetup.date}} - {{ meetup.location }}</div>
+						<div>{{ meetup.description }}</div>
 					</v-card-text>
 					<v-card-actions>
 						<v-spacer></v-spacer>
