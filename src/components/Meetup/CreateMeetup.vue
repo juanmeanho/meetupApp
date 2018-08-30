@@ -65,14 +65,13 @@
           </v-layout>
           <v-layout row class="mb-3">
             <v-flex xs12 sm6 offset-sm3>
-              <v-date-picker v-model="date" color="blue"></v-date-picker>
-              {{ date}}
+              <v-date-picker v-model="date" color="blue">
+              </v-date-picker> 
             </v-flex>
           </v-layout>
           <v-layout row >
             <v-flex xs12 sm6 offset-sm3>
               <v-time-picker v-model="time" color="blue"></v-time-picker>
-              <p>{{ time }}</p>
             </v-flex>
           </v-layout>
           <v-layout row>
@@ -82,7 +81,6 @@
                     type="submit"
                     >Create Meetup
               </v-btn>
-              {{submittableDateTime}}
             </v-flex>
           </v-layout>
         </form>
@@ -123,7 +121,7 @@ export default {
           date.setHours(this.time.getHours())
           date.setMinutes(this.time.getMinutes())
       }
-      console.log(date)
+      //console.log(date)
       return date
     }
   },

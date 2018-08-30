@@ -12,7 +12,7 @@
 						contain>
 					</v-card-media>
 					<v-card-text>
-						<div class="info--text">{{ meetup.date}} - {{ meetup.location }}</div>
+						<div class="info--text">{{ meetup.date | date}} - {{ meetup.location }}</div>
 						<div>{{ meetup.description }}</div>
 					</v-card-text>
 					<v-card-actions>
@@ -27,7 +27,7 @@
 
 <script>
 export default {
-	props: ['id'],
+	props: ['id: number'],
 	computed:{
 		meetup(){
 			return this.$store.getters.loadedMeetup(this.id)

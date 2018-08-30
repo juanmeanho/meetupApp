@@ -9,14 +9,14 @@ export const store = new Vuex.Store({
             { imageUrl:'https://media-cdn.tripadvisor.com/media/photo-s/0e/9a/e3/1d/freedom-tower.jpg', 
               id:'dfsdfsdf323', 
               title: 'Meetup in New York',
-              date: '2017-07-17',
+              date: new Date(),
               location: 'New York',
               description: 'New York New York'
             },
             { imageUrl:'https://media-cdn.tripadvisor.com/media/photo-s/0d/f5/7c/f2/eiffel-tower-priority.jpg', 
               id:'dfsdfsdf32354454', 
               title: 'Meetup in Paris',
-              date: '2017-07-23',
+              date: new Date(),
               location: 'Paris',
               description: 'Its Paris'
             }
