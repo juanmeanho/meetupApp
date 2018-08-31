@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from 'firebase'
-import { stat } from 'fs';
 
 Vue.use(Vuex)
 
@@ -51,11 +50,18 @@ export const store = new Vuex.Store({
                 location: payload.location,
                 imageUrl: payload.imageUrl,
                 description: payload.description,
-                date: payload.date,
-                id:'sadasfadasd123'
+                date: payload.date.toISOString()
+                //id:'sadasfadasd123' firebase coloca uno automagicamente
             }
+            firebase.database().ref('meetups').push(meetup)
+              .then((data) => {
+                  console.log(data)
+                  commit('createMeetup', meetup)
+              })
+              .catch((error) => {
+                console.log(error)
+              })
             //Reach out to firebase and store it
-            commit('createMeetup', meetup)
         },
         signUserUp({ commit }, payload){
             commit('setLoading', true)
