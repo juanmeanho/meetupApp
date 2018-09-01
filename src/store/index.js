@@ -27,6 +27,9 @@ export const store = new Vuex.Store({
           error: null
     },
     mutations: {
+        setLoadedMeetups(state, payload){
+            state.loadedMeetups = payload
+        },
         createMeetup(state, payload){
             state.loadedMeetups.push(payload)
         },
@@ -44,17 +47,51 @@ export const store = new Vuex.Store({
         }
     },
     actions: {
-        createMeetup({commit}, payload){
+        loadMeetups({commit}){
+            commit('setLoading', true)
+            firebase.database().ref('meetups').once('value')
+                .then((data) => {
+                    const meetups = []
+                    const obj = data.val()
+                    for(let key in obj){
+                        meetups.push({
+                            id: key,
+                            title: obj[key].title,
+                            description: obj[key].description,
+                            imageUrl: obj[key].imageUrl,
+                            date: obj[key].date,
+                            creatorId: obj[key].creatorId
+                        })
+                    }
+                    commit('setLoadedMeetups', meetups)
+                    commit('setLoading', false)
+
+                })
+                .catch(
+                    (error) => { 
+                        console.log(error)
+                    commit('setLoading', true)
+
+                    }
+                )
+        },
+        createMeetup({commit, getters}, payload){
             const meetup = {
                 title: payload.title,
                 location: payload.location,
                 imageUrl: payload.imageUrl,
                 description: payload.description,
-                date: payload.date.toISOString()
+                date: payload.date.toISOString(),
+                creatorId: getters.user.id
                 //id:'sadasfadasd123' firebase coloca uno automagicamente
             }
             firebase.database().ref('meetups').push(meetup)
               .then((data) => {
+                  const key = data.key
+                  commit('createMeetup', {
+                    ...meetup,
+                    id: key
+                })
                   console.log(data)
                   commit('createMeetup', meetup)
               })
@@ -105,6 +142,13 @@ export const store = new Vuex.Store({
                     }
 
                 )
+        },
+        autoSignIn({commit}, payload) {
+            commit('setUser', {id: payload.uid, registeredMeetups: []})
+        },
+        logout({commit}){
+            firebase.auth().signOut()
+            commit('setUser', null)
         },
         clearError({commit}){
             commit('clearError')
