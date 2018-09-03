@@ -33,6 +33,20 @@ export const store = new Vuex.Store({
         createMeetup(state, payload){
             state.loadedMeetups.push(payload)
         },
+        updateMeetup(state, payload){
+            const meetup = state.loadedMeetups.find(meetup => {
+                    return meetup.id === payload.id
+                })
+            if(payload.title){
+                meetup.title = payload.title
+            }
+            if(payload.description){
+                meetup.description = payload.description
+            }
+            if(payload.date){
+                meetup.date = payload.date
+            }
+        },
         setUser(state, payload){
             state.user = payload
         },
@@ -60,6 +74,7 @@ export const store = new Vuex.Store({
                             description: obj[key].description,
                             imageUrl: obj[key].imageUrl,
                             date: obj[key].date,
+                            location: obj[key].location,
                             creatorId: obj[key].creatorId
                         })
                     }
@@ -75,30 +90,122 @@ export const store = new Vuex.Store({
                     }
                 )
         },
-        createMeetup({commit, getters}, payload){
+        /*createMeetup({commit, getters}, payload){
             const meetup = {
                 title: payload.title,
                 location: payload.location,
-                imageUrl: payload.imageUrl,
+                //imageUrl: payload.imageUrl,
                 description: payload.description,
                 date: payload.date.toISOString(),
                 creatorId: getters.user.id
                 //id:'sadasfadasd123' firebase coloca uno automagicamente
             }
+            let imageUrl
+            let key            
             firebase.database().ref('meetups').push(meetup)
               .then((data) => {
-                  const key = data.key
-                  commit('createMeetup', {
-                    ...meetup,
-                    id: key
+                  key = data.key
+                  //commit('createMeetup', {
+                  //  ...meetup,
+                  //  id: key
+                //})
+                  //console.log(data)
+                  //commit('createMeetup', meetup)
+                  return key
+              })
+              .then(key => {
+                const filename = payload.image.name
+                const ext = filename.slice(filename.lastIndexOf('.'))
+                firebase.storage().ref('meetups/' + key +'.' + ext).put(payload.image)
+              })
+              .then(fileData => {
+                imageUrl = fileData.ref.downloadURLs[0]
+                return firebase.database().ref('meetups').child(key).update({
+                    imageUrl: imageUrl
                 })
-                  console.log(data)
-                  commit('createMeetup', meetup)
+                .then(() =>{
+                        commit('createMeetup', {
+                      ...meetup,
+                      imageUrl: imageUrl,
+                      id: key
+                    })
+                })
               })
               .catch((error) => {
                 console.log(error)
               })
             //Reach out to firebase and store it
+        },*/
+        createMeetup ({commit, getters}, payload) {
+      const meetup = {
+        title: payload.title,
+        location: payload.location,
+        description: payload.description,
+        date: payload.date.toISOString(),
+        creatorId: getters.user.id
+      }
+      let imageUrl
+      let key
+      let uploadTask
+      commit('setLoading', true)
+      firebase.database().ref('meetups').push(meetup).then((data) => {
+        key = data.key
+        return key
+      })
+      .then(key => {
+        const filename = payload.image.name
+        const ext = filename.slice(filename.lastIndexOf('.'))
+        // Create a root reference
+        const storageRef = firebase.storage().ref()
+        uploadTask = storageRef.child('meetups/' + key + ext).put(payload.image)
+      })
+      .then(() => {
+        commit('setLoading', true)
+        uploadTask.on('state_changed', function (snapshot) {
+        }, function (error) {
+          console.log(error)
+          commit('setLoading', false)
+        }, function () {
+          uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+            console.log('File available at', downloadURL)
+            imageUrl = downloadURL
+            if (imageUrl) {
+              firebase.database().ref('meetups').child(key).update({imageUrl: imageUrl})
+              console.log('image updated')
+              commit('createMeetup', {
+                ...meetup,
+                imageUrl: imageUrl,
+                id: key
+              })
+              commit('setLoading', false)
+            } else {
+              commit('setLoading', false)
+            }
+          })
+        })
+      })
+    },﻿
+        updateMeetupData({commit}, payload){
+           commit('setLoading', true)
+           const updateObj = {}
+           if(payload.title){
+            updateObj.title = payload.title
+           }
+           if(payload.description){
+            updateObj.description = payload.description
+           }
+           if(payload.date){
+            updateObj.date = payload.date
+           }
+           firebase.database().ref('meetups').child(payload.id).update(updateObj)
+            .then(() => {
+                commit('setLoading', false)
+                commit('updateMeetup', payload)
+            })
+            .catch(error => {
+                console.log(error)
+                commit('setLoading', false)
+            })
         },
         signUserUp({ commit }, payload){
             commit('setLoading', true)
